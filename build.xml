@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="VirusWar" default="compile">
+   <target name="compile">
+       <mkdir dir="bin/"/>
+       <javac destdir="bin/" includeantruntime="false">
+           <src path="src"/>
+       </javac>
+   </target>
+   <!-- <target name="rmi" depends="compile">
+        <rmic base="package" destdir="bin/" classname="src.rmi.server.VirusWarServiceImpl" classpath="bin"/>                          
+   </target> -->
+   <target name="clean">
+       <delete dir="bin"/>
+   </target>
+</project>
