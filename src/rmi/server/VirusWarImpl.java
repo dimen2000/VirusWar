@@ -105,7 +105,7 @@ public class VirusWarImpl implements VirusWar {
                 for(int j = -1; j < 2; j++) {
                     if(field[x + i][y + j] == 'x')
                         return true;
-                    if(field[x + i][y + j] == '@' && !checkedfield[x + i][x + i])
+                    if(field[x + i][y + j] == '@' && !checkedfield[x + i][y + j])
                         if(canSetXCellRecursive(x + i, y + j))
                             return true;
                 }
@@ -118,7 +118,7 @@ public class VirusWarImpl implements VirusWar {
         if((x == 0) && (y == 0) && (field[dx][dy] == '_'))
             return true;
         if((field[dx][dy] == '_' || field[dx][dy] == 'o') 
-        && (dx > -1) && (dx < 10) && (dy > -1) && (dy < 10)) {
+        && (dx > -1) && (dx < 11) && (dy > -1) && (dy < 11)) {
             for(int i = -1; i < 2; ++i)
                 for(int j = -1; j < 2; j++) {
                     if(field[dx + i][dy + j] == 'x') {
@@ -141,7 +141,7 @@ public class VirusWarImpl implements VirusWar {
                 for(int j = -1; j < 2; j++) {
                     if(field[x + i][y + j] == 'o')
                         return true;
-                    if(field[x + i][y + j] == '*' && !checkedfield[x + i][x + i])
+                    if(field[x + i][y + j] == '*' && !checkedfield[x + i][y + j])
                         if(canSetOCellRecursive(x + i, y + j))
                             return true;
                 }
@@ -154,7 +154,7 @@ public class VirusWarImpl implements VirusWar {
         if((x == fieldsize_x - 3) && (y == fieldsize_y - 3) && (field[dx][dy] == '_'))
             return true;
         if((field[dx][dy] == '_' || field[dx][dy] == 'x') 
-        && (dx > -1) && (dx < 10) && (dy > -1) && (dy < 10)) {
+        && (dx > -1) && (dx < 11) && (dy > -1) && (dy < 11)) {
             for(int i = -1; i < 2; ++i)
                 for(int j = -1; j < 2; j++) {
                     if(field[dx + i][dy + j] == 'o') {
