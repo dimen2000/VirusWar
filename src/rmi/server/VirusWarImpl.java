@@ -9,6 +9,7 @@ public class VirusWarImpl implements VirusWar {
     int fieldsize_x = 12;
     int fieldsize_y = 12;
     int currentTurn;
+    boolean gameEnded = false;
 
     public VirusWarImpl() {
         currentTurn = 0;
@@ -71,11 +72,14 @@ public class VirusWarImpl implements VirusWar {
     }
 
     public boolean isGameEnded() throws RemoteException {
-        for(int i = 0; i < fieldsize_y - 2; ++i)
-            for(int j = 0; j < fieldsize_x - 2; ++j) {
-                if(canSetCell(j, i, currentTurn))
-                    return false;
-            }
+        if(!gameEnded) {
+            for(int i = 0; i < fieldsize_y - 2; ++i)
+                for(int j = 0; j < fieldsize_x - 2; ++j) {
+                    if(canSetCell(j, i, currentTurn))
+                        return false;
+                }
+                gameEnded = true;
+        }
         return true;
     }
 
@@ -102,7 +106,7 @@ public class VirusWarImpl implements VirusWar {
                     if(field[x + i][y + j] == 'x')
                         return true;
                     if(field[x + i][y + j] == '@' && !checkedfield[x + i][x + i])
-                        if(canSetOCellRecursive(x + i, y + j))
+                        if(canSetXCellRecursive(x + i, y + j))
                             return true;
                 }
         return false;
@@ -138,7 +142,7 @@ public class VirusWarImpl implements VirusWar {
                     if(field[x + i][y + j] == 'o')
                         return true;
                     if(field[x + i][y + j] == '*' && !checkedfield[x + i][x + i])
-                        if(canSetXCellRecursive(x + i, y + j))
+                        if(canSetOCellRecursive(x + i, y + j))
                             return true;
                 }
         return false;
@@ -165,5 +169,10 @@ public class VirusWarImpl implements VirusWar {
         }
         freeCheckedField();
         return false;
+    }
+
+    @Override
+    public boolean GetGameEnded() throws RemoteException {
+        return gameEnded;
     }
 }

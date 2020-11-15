@@ -26,6 +26,7 @@ public class VirusWarClient {
     }
 
     public static int parseVertical(int num) {
+        System.out.println(num);
         if(num < 48 || num > 57)
             return -1;
         else 
@@ -33,6 +34,7 @@ public class VirusWarClient {
     }
 
     public static int parseHorizontal(int ch) {
+        System.out.println(ch);
         if(ch < 97 || ch > 106)
             return -1;
         else 
@@ -42,63 +44,62 @@ public class VirusWarClient {
     public static void main(String[] args) throws Exception {
         Registry registry = LocateRegistry.getRegistry(6666); 
         VirusWar stub = (VirusWar) registry.lookup("VirusWar"); 
-        try {
-            int id = stub.addNewPlayer();
-            if (id == -1) {
-                System.out.println("Can't connect, enought players in lobby");
-            } else {
-                boolean isGameEnded = false;
-                do {
-                        while (!stub.IsReady()) {
-                            System.out.println("Waitng for another player ...");
-                            Thread.sleep(2000);
-                        }
-//                        System.out.println("Game is started!/n");
-                        if(!stub.isMyTurn(id))
-                            System.out.println("Your opponent's turn, please wait");
-                        while(!stub.isMyTurn(id)) {
-                            Thread.sleep(500);
-                        }
-                        System.out.println("It's your turn!");
-                        System.out.println("you should choose 3 cells");
-                        System.out.println("Enter cell coordinats");
-                        printField(stub.getField());
-                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-
-                        int horizon = 0;
-                        int vertical = 0;
-
-                        for (int i = 0; i < 3; ++i) {
-                            if(stub.isGameEnded()) {
-                                isGameEnded = true;
-                                break;
-                            }
-                            boolean success = false;
-                            System.out.println("format: number letter");
-                            while(true) {
-                                vertical = parseVertical(bufferedReader.read());
-                                int space = bufferedReader.read();
-                                horizon = parseHorizontal(bufferedReader.read());
-                                int enter = bufferedReader.read();
-                                System.out.println(vertical);
-                                System.out.println(space);
-                                System.out.println(horizon);
-                                System.out.println (enter);
-                                success = (horizon != -1) && (space == 32) && (vertical != -1) && (enter == 10);
-                                if(success){
-                                    if(!stub.canSetCell(horizon, vertical, id)){
-                                        System.out.println("Can't set symbol there");
-                                    } else
-                                        break;
-                                }
-                                System.out.println("Try again");
-                            }
-                            stub.setCell(horizon, vertical, id);
-                            printField(stub.getField());
-                        }
-                        stub.endTurn();
-                    } while(!isGameEnded);
+        int id = stub.addNewPlayer();
+        if (id == -1) {
+            System.out.println("Can't connect, enought players in lobby");
+        } else {
+            boolean isGameEnded = false;
+            do {
+                while (!stub.IsReady()) {
+                    System.out.println("Waitng for another player ...");
+                    Thread.sleep(2000);
                 }
-        } catch (RemoteException e) {}
+                if(!stub.isMyTurn(id))
+                    System.out.println("Your opponent's turn, please wait");
+                while(!stub.isMyTurn(id)) {
+                    Thread.sleep(500);
+                }
+                if(stub.GetGameEnded()) {
+                    System.out.println("Congrats, you won!");
+                    break;
+                }
+                System.out.println("It's your turn!");
+                System.out.println("you should choose 3 cells");
+                System.out.println("Enter cell coordinats");
+                printField(stub.getField());
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+
+                int horizon = 0;
+                int vertical = 0;
+
+                for (int i = 0; i < 3; ++i) {
+                    if(stub.isGameEnded()) {
+                        isGameEnded = true;
+                        System.out.println("You losed");
+                        break;
+                    }
+                    boolean success = false;
+                    System.out.println("format: letternumber");
+                    while(true) {
+                        String buff = bufferedReader.readLine();
+                        if(buff.length() == 2) {
+                            horizon = parseHorizontal(buff.charAt(0));
+                            vertical = parseVertical(buff.charAt(1));
+                            success = (horizon != -1) && (vertical != -1);
+                            if(success){
+                                if(!stub.canSetCell(horizon, vertical, id)){
+                                    System.out.println("Can't set symbol there");
+                                } else
+                                    break;
+                            }
+                        }
+                        System.out.println("Wrong input\nTry again");
+                    }
+                    stub.setCell(horizon, vertical, id);
+                    printField(stub.getField());
+                }
+                stub.endTurn();
+            } while(!isGameEnded);
+        }
     }
 }

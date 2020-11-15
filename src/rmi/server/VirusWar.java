@@ -13,5 +13,6 @@ public interface VirusWar extends Remote {
     boolean canSetCell(int x, int y, int id) throws RemoteException;
     boolean canSetXCell(int x, int y) throws RemoteException;
     boolean canSetOCell(int x, int y) throws RemoteException;
+    boolean GetGameEnded() throws RemoteException;
     void endTurn() throws RemoteException;
 }
